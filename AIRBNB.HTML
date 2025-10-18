@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airbnb WEB Clone</title>
+    <!-- Favicon link -->
+    <link rel="icon" type="image/png" href="IMAGES/OIP.webp"> 
+    
+    <!-- Load Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <!-- Load Inter Font and Custom Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #222222;
+        }
+        .airbnb-red {
+            color: #FF5A5F !important;
+        }
+        .airbnb-bg-red {
+            background-color: #FF5A5F !important;
+        }
+        .search-container {
+            border: 1px solid #DDDDDD;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 50px;
+            transition: box-shadow 0.2s ease;
+        }
+        .search-container:hover {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18), 0 5px 15px rgba(0, 0, 0, 0.07);
+        }
+        .search-btn-icon {
+            padding: 8px;
+            height: 32px;
+            width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-img-container {
+            position: relative;
+            padding-bottom: 100%;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .card-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        /* Custom breakpoint to fit 7 cards neatly in a row (approx 14.28% width) */
+        @media (min-width: 1400px) {
+            .col-xxl-1-7 {
+                width: 14.28%; /* 100 / 7 */
+            }
+        }
+        .search-bar-item:focus-within {
+            background-color: white;
+            box-shadow: 0 0 0 1px white, 0 0 0 2px black;
+            border-radius: 50px;
+        }
+        .nav-category-active {
+            border-bottom: 2px solid #222222;
+            color: #222222 !important;
+        }
+        .favorite-btn-bg {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+        .favorite-btn-svg path {
+            fill: none;
+            stroke: white;
+            stroke-width: 2.5;
+        }
+        .favorite-btn-bg:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ---------------------------------------------------------------------- -->
+    <!-- HEADER / NAVIGATION BAR -->
+    <!-- ---------------------------------------------------------------------- -->
+    <header class="sticky-top bg-white border-bottom shadow-sm">
+        <div class="container-fluid px-4 px-md-5 py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                
+                <!-- Logo -->
+                <div class="d-flex align-items-center">
+                    <img src="IMAGES/R.png" alt="Airbnb Logo" style="height: 32px; width: 108px;">
+                </div>
+
+                <!-- Search Bar (Compact/Header Version) -->
+                <div class="d-none d-md-flex align-items-center search-container text-sm">
+                    <button class="btn btn-sm btn-light border-0 rounded-pill fw-semibold px-4 py-2">Anywhere</button>
+                    <button class="btn btn-sm btn-light border-0 rounded-pill fw-semibold px-4 py-2 mx-1">Anytime</button>
+                    <button class="btn btn-sm text-secondary rounded-pill d-flex align-items-center ps-4 pe-2">
+                        Add guests
+                        <div class="search-btn-icon rounded-circle airbnb-bg-red ms-3">
+                            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 12px; width: 12px; stroke: currentcolor; stroke-width: 4; overflow: visible; color: white;"><g fill="none"><path d="m13 24c6.0751322 0 11-4.9248678 11-11 0-6.07513225-4.9248678-11-11-11-6.07513225 0-11 4.92486775-11 11 0 6.0751322 4.92486775 11 11 11zm8-3 9 9"></path></g></svg>
+                        </div>
+                    </button>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-light rounded-pill fw-semibold p-2 d-none d-lg-block">Become a host</button>
+                    <button class="btn btn-sm btn-light rounded-circle p-2">
+                        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; height: 16px; width: 16px; fill: currentcolor;"><path d="M8.005 0.75a7.25 7.25 0 1 0 7.25 7.25 7.25 7.25 0 0 0-7.25-7.25ZM2.75 8a5.25 5.25 0 1 1 5.25 5.25A5.25 5.25 0 0 1 2.75 8Z"></path><path d="M10.25 8.75a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"></path></svg>
+                    </button>
+                    
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-light rounded-pill border d-flex align-items-center p-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; stroke: currentcolor; stroke-width: 3; overflow: visible;"><path d="m2 16h28m-28-6h28m-28 12h28"></path></svg>
+                            <div class="bg-secondary rounded-circle ms-1" style="height: 24px; width: 24px;"></div>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item fw-bold" href="#">Sign up</a></li>
+                            <li><a class="dropdown-item" href="#">Log in</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Host your home</a></li>
+                            <li><a class="dropdown-item" href="#">Help</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ---------------------------------------------------------------------- -->
+    <!-- EXPANDED SEARCH BAR & CATEGORY TABS -->
+    <!-- ---------------------------------------------------------------------- -->
+    <div class="container-fluid px-4 px-md-5 pt-3 pb-4">
+        <div class="d-flex justify-content-center mb-4">
+            <div class="d-flex gap-4 text-secondary border-bottom border-secondary-subtle pb-2">
+                
+                <!-- Homes (Active) -->
+                <button class="btn btn-link text-decoration-none text-secondary d-flex flex-column align-items-center p-0 nav-category-active">
+                    <img src="IMAGES/pngtree-house-symbol-icon-vector-png-image_12548629.png" alt="Homes Icon" class="mb-1" style="height: 24px; width: 24px;" onerror="this.src='https://placehold.co/24x24/ffffff?text=🏠'">
+                    <span class="fw-semibold small">Homes</span>
+                </button>
+                
+                <!-- Experiences -->
+                <button class="btn btn-link text-decoration-none text-secondary d-flex flex-column align-items-center p-0">
+                    <img src="IMAGES/Travel-icon-hotel-design-creative-vector-Graphics-9793005-1-1-580x387.jpg" alt="Experiences Icon" class="mb-1" style="height: 24px; width: 24px;" onerror="this.src='https://placehold.co/24x24/ffffff?text=🎈'">
+                    <span class="fw-semibold small">Experiences</span>
+                </button>
+                
+                <!-- Services -->
+                <button class="btn btn-link text-decoration-none text-secondary d-flex flex-column align-items-center p-0">
+                    <img src="IMAGES/9369162.png" alt="Services Icon" class="mb-1" style="height: 24px; width: 24px;" onerror="this.src='https://placehold.co/24x24/ffffff?text=🛎️'">
+                    <span class="fw-semibold small">Services</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Large Search Bar Container -->
+        <div class="d-flex justify-content-center mb-4">
+            <div class="search-container d-flex flex-column flex-md-row w-100" style="max-width: 768px; border-radius: 50px;">
+                <!-- Location -->
+                <button class="btn text-start p-2 border-0 search-bar-item flex-fill">
+                    <div class="px-3 py-2">
+                        <p class="fw-bold small mb-0">Where</p>
+                        <input type="text" placeholder="Search destinations" class="form-control form-control-sm border-0 p-0 shadow-none text-sm text-secondary" style="background: transparent;">
+                    </div>
+                </button>
+
+                <!-- Check in / Check out / Who (Grouped for smaller screens) -->
+                <div class="d-flex w-100 w-md-auto">
+                    <!-- Check in -->
+                    <button class="btn text-start p-2 border-0 search-bar-item flex-fill border-end border-secondary-subtle">
+                        <div class="px-3 py-2">
+                            <p class="fw-bold small mb-0">Check in</p>
+                            <span class="small text-secondary">Add dates</span>
+                        </div>
+                    </button>
+
+                    <!-- Check out -->
+                    <button class="btn text-start p-2 border-0 search-bar-item flex-fill border-end border-secondary-subtle d-none d-sm-block">
+                        <div class="px-3 py-2">
+                            <p class="fw-bold small mb-0">Check out</p>
+                            <span class="small text-secondary">Add dates</span>
+                        </div>
+                    </button>
+
+                    <!-- Guests/Search -->
+                    <button class="btn text-start p-2 border-0 search-bar-item d-flex align-items-center flex-fill">
+                        <div class="px-3 py-2 flex-grow-1">
+                            <p class="fw-bold small mb-0">Who</p>
+                            <span class="small text-secondary">Add guests</span>
+                        </div>
+                        <div class="search-btn-icon rounded-circle airbnb-bg-red text-white">
+                            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 14px; width: 14px; stroke: currentcolor; stroke-width: 4; overflow: visible; color: white;"><g fill="none"><path d="m13 24c6.0751322 0 11-4.9248678 11-11 0-6.07513225-4.9248678-11-11-11-6.07513225 0-11 4.92486775-11 11 0 6.0751322 4.92486775 11 11 11zm8-3 9 9"></path></g></svg>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ---------------------------------------------------------------------- -->
+    <!-- MAIN CONTENT AREA (Listings Grid) -->
+    <!-- ---------------------------------------------------------------------- -->
+    <main class="container-fluid px-4 px-md-5 mt-4">
+
+        <!-- Section 1: Popular homes in Bengaluru (7 Cards) -->
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="fs-4 fw-bold">Popular homes in Bengaluru</h2>
+                <div class="d-flex gap-2 text-secondary">
+                    <button class="btn btn-light rounded-circle border p-2">
+                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 12px; width: 12px; stroke: currentcolor; stroke-width: 5.33333; overflow: visible;"><path d="m20 26-8-10 8-10"></path></svg>
+                    </button>
+                    <button class="btn btn-light rounded-circle border p-2">
+                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 12px; width: 12px; stroke: currentcolor; stroke-width: 5.33333; overflow: visible;"><path d="m12 26 8-10-8-10"></path></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Listing 1 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Apartment in Narayanpur" src="IMAGES/H1.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Apartment in Narayanpur</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.98</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹23,764</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 2 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Flat in Bangalore Urban" src="IMAGES/H2.webp" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Flat in Bangalore Urban</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">5.0</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹22,465</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 3 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Flat in Koramangala" src="IMAGES/H3.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Flat in Koramangala</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.93</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹21,076</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 4 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Flat in Bangalore Urban" src="IMAGES/H4.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Flat in Bangalore Urban</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.86</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹2,511</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 5 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Flat in Bellandur" src="IMAGES/H5.webp" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Flat in Bellandur</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.96</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹26,049</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 6 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Flat in Gottigere" src="IMAGES/H6.avif" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Flat in Gottigere</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">5.0</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹24,093</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 7 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Luxury Villa in Whitefield" src="IMAGES/H7.webp" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Luxury Villa in Whitefield</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.75</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Villa for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹13,536</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Available in Ernakulam next weekend (7 Cards) -->
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="fs-4 fw-bold">Available in Ernakulam next weekend</h2>
+                <div class="d-flex gap-2 text-secondary">
+                    <button class="btn btn-light rounded-circle border p-2">
+                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 12px; width: 12px; stroke: currentcolor; stroke-width: 5.33333; overflow: visible;"><path d="m20 26-8-10 8-10"></path></svg>
+                    </button>
+                    <button class="btn btn-light rounded-circle border p-2">
+                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 12px; width: 12px; stroke: currentcolor; stroke-width: 5.33333; overflow: visible;"><path d="m12 26 8-10-8-10"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Listing 1 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Home in Fort Kochi" src="IMAGES/P1.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Home in Fort Kochi</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.92</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹18,500</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 2 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Flat in Marine Drive" src="IMAGES/P2.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Flat in Marine Drive</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.94</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹12,600</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 3 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Villa near Lulumall" src="IMAGES/P3.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Villa near Lulumall</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">5.0</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Villa for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹16,391</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 4 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Houseboat in Alappuzha" src="IMAGES/P4.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Houseboat in Alappuzha</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.89</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Boat for 3 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹30,000</span> for 3 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 5 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Modern Flat in Kakkanad" src="IMAGES/P5.webp" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Modern Flat in Kakkanad</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.68</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 1 night</p>
+                            <p class="small mb-0"><span class="fw-bold">₹8,500</span> for 1 night</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 6 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Riverside Cottage" src="IMAGES/P6.webp" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Riverside Cottage</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.99</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Cottage for 4 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹40,000</span> for 4 nights</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Listing 7 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Penthouse near Airport" src="IMAGES/P7.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Penthouse near Airport</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.80</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Luxury for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹28,990</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Stay in Thiruvananthapuram (7 Cards) -->
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="fs-4 fw-bold">Stay in Thiruvananthapuram</h2>
+                <div class="d-flex gap-2 text-secondary">
+                    <button class="btn btn-light rounded-circle border p-2">
+                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 12px; width: 12px; stroke: currentcolor; stroke-width: 5.33333; overflow: visible;"><path d="m20 26-8-10 8-10"></path></svg>
+                    </button>
+                    <button class="btn btn-light rounded-circle border p-2">
+                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 12px; width: 12px; stroke: currentcolor; stroke-width: 5.33333; overflow: visible;"><path d="m12 26 8-10-8-10"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Listing 1 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Flat in Vathucaud" src="IMAGES/D1.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Flat in Vathucaud</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.88</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹25,250</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 2 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Room in Thiruvananthapuram" src="IMAGES/D2.webp" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Room in Thiruvananthapuram</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">5.0</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Room for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹3,724</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 3 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Flat in Pattom" src="IMAGES/D3.avif" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Flat in Pattom</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.97</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹5,935</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 4 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Beach View Apartment" src="IMAGES/D4.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Beach View Apartment</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.91</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Apartment for 3 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹15,000</span> for 3 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 5 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Home in Sasthamangalam" src="IMAGES/D5.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Home in Sasthamangalam</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.84</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Home for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹3,424</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 6 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Guest Suite in Sasthamangalam" src="IMAGES/D6.jpg" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Guest Suite in Sasthamangalam</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.82</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Suite for 3 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹3,538</span> for 3 nights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listing 7 -->
+                <div class="col-6 col-sm-4 col-md-4 col-lg-3 col-xxl-1-7 mb-4">
+                    <div class="card border-0 p-0">
+                        <div class="card-img-container mb-2">
+                            <img class="card-img" alt="Flat in Sasthamangalam" src="IMAGES/D7.webp" />
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-white text-dark fw-semibold px-2 py-1 shadow-sm">Guest favourite</span>
+                            <button class="btn position-absolute top-0 end-0 m-2 p-1 rounded-circle favorite-btn-bg">
+                                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; overflow: visible;" class="favorite-btn-svg"><path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.051-2.051c-1.366-1.366-3.158-2.05-4.949-2.05-1.792 0-3.583.684-4.95 2.05-1.366 1.367-2.05 3.158-2.05 4.95 0 7 7 12.267 14 17z"></path></svg>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="d-flex justify-content-between align-items-start fw-semibold">
+                                <p class="text-truncate mb-0">Flat in Sasthamangalam</p>
+                                <div class="d-flex align-items-center ms-2 small">
+                                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 12px; width: 12px;"><path d="m15.1 1.58-4.13 8.88-9.82 1.35c-.67.09-.94.94-.46 1.48l7.2 6.94-1.7 9.87c-.12.69.6 1.23 1.21.91l8.76-4.66 8.76 4.66c.6.32 1.33-.22 1.21-.91l-1.7-9.87 7.2-6.94c.48-.54.21-1.39-.46-1.48l-9.82-1.35-4.13-8.88c-.28-.6-.94-.6-1.22 0z"></path></svg>
+                                    <span class="text-secondary ms-1">4.92</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-1">Flat for 2 nights</p>
+                            <p class="small mb-0"><span class="fw-bold">₹25,250</span> for 2 nights</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ---------------------------------------------------------------------- -->
+    <!-- FOOTER -->
+    <!-- ---------------------------------------------------------------------- -->
+    <footer class="bg-light mt-5 border-top border-secondary-subtle">
+        <div class="container-fluid px-4 px-md-5 py-5">
+            <div class="row row-cols-2 row-cols-md-4 g-4">
+                <!-- Support Column -->
+                <div class="col">
+                    <h5 class="fw-bold mb-3 small">Support</h5>
+                    <ul class="list-unstyled small text-secondary">
+                        <li><a href="#" class="text-decoration-none text-secondary">Help Centre</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Get help with a safety issue</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">AirCover</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Anti-discrimination</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Disability support</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Cancellation options</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Report neighbourhood concern</a></li>
+                    </ul>
+                </div>
+
+                <!-- Hosting Column -->
+                <div class="col">
+                    <h5 class="fw-bold mb-3 small">Hosting</h5>
+                    <ul class="list-unstyled small text-secondary">
+                        <li><a href="#" class="text-decoration-none text-secondary">Airbnb your home</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">AirCover for Hosts</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Hosting resources</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Community forum</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Hosting responsibly</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Join a free Hosting class</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Find a co-host</a></li>
+                    </ul>
+                </div>
+
+                <!-- Airbnb Column -->
+                <div class="col">
+                    <h5 class="fw-bold mb-3 small">Airbnb</h5>
+                    <ul class="list-unstyled small text-secondary">
+                        <li><a href="#" class="text-decoration-none text-secondary">Newsroom</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Careers</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Investors</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Airbnb.org emergency stays</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">2024 Summer Release</a></li>
+                    </ul>
+                </div>
+                 <!-- Community Column -->
+                <div class="col">
+                    <h5 class="fw-bold mb-3 small">Community</h5>
+                    <ul class="list-unstyled small text-secondary">
+                        <li><a href="#" class="text-decoration-none text-secondary">Airbnb.org: disaster relief</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Support Afghan refugees</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">A-list: travel benefits</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Our commitment to diversity</a></li>
+                        <li><a href="#" class="text-decoration-none text-secondary">Connect with a Local Host</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Bar -->
+            <div class="mt-4 pt-4 border-top border-secondary-subtle small text-secondary d-flex flex-column flex-sm-row justify-content-between align-items-center">
+                <div class="d-flex flex-wrap gap-2 gap-sm-3">
+                    <span>&copy; 2025 Airbnb, Inc.</span>
+                    <span class="d-none d-sm-inline">·</span>
+                    <a href="#" class="text-decoration-none text-secondary">Privacy</a>
+                    <span class="d-none d-sm-inline">·</span>
+                    <a href="#" class="text-decoration-none text-secondary">Terms</a>
+                    <span class="d-none d-sm-inline">·</span>
+                    <a href="#" class="text-decoration-none text-secondary">Sitemap</a>
+                </div>
+                <div class="d-flex align-items-center gap-4 mt-3 mt-sm-0">
+                    <div class="d-flex align-items-center gap-1">
+                        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: currentcolor; height: 16px; width: 16px;"><path d="M8.005 0.75a7.25 7.25 0 1 0 7.25 7.25 7.25 7.25 0 0 0-7.25-7.25ZM3.812 11.23a4.998 4.998 0 0 1-0.966-2.98h2.083a2.983 2.983 0 0 0 0.828 2.06c-0.198 0.05-0.395 0.08-0.598 0.08-0.595 0-1.157-0.128-1.747-0.45Z"></path></svg>
+                        <span class="fw-semibold">English (IN)</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span>₹</span>
+                        <span class="fw-semibold">INR</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load Bootstrap 5 JS Bundle (required for dropdowns, etc.) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+</body>
+</html>
